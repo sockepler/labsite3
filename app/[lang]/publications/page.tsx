@@ -1,35 +1,48 @@
-export default function PublicationsPage() {
+import { notFound } from "next/navigation";
+import PageBanner from "../components/PageBanner";
+import SectionHeading from "../components/SectionHeading";
+import { getDictionary, isLang } from "../dictionaries";
+
+export default async function PublicationsPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  if (!isLang(lang)) notFound();
+  const { publications } = await getDictionary(lang);
+
   return (
-    <main className="max-w-4xl mx-auto py-20 px-6 text-gray-800">
-      <h1 className="text-4xl font-bold mb-10">研究業績</h1>
+    <>
+      <PageBanner title={publications.title} tint="amber" />
+      <section className="max-w-4xl mx-auto py-16 px-6 text-gray-800">
+        <SectionHeading>{publications.journalsHeading}</SectionHeading>
+        <div className="space-y-4">
+          {publications.journals.map((j) => (
+            <article
+              key={j.title}
+              className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 transition hover:shadow-md flex gap-5 items-start"
+            >
+              <div className="shrink-0 w-16 h-16 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-base">
+                {j.year}
+              </div>
+              <div className="min-w-0">
+                <h3 className="font-semibold text-gray-900 leading-snug mb-1">
+                  {j.title}
+                </h3>
+                <p className="text-sm text-gray-600">{j.authors}</p>
+              </div>
+            </article>
+          ))}
+        </div>
 
-      <h2 className="text-2xl font-semibold mt-10 mb-4">国際会議・論文誌</h2>
-
-      <ul className="list-disc pl-6 space-y-4">
-        <li>
-          <strong>2024</strong><br />
-          Stochastic Comparator Architecture for Low-Power SAR ADCs  
-          （佐々木ほか）
-        </li>
-
-        <li>
-          <strong>2023</strong><br />
-          Analog-Mixed Signal Modeling Method for SAR ADC Optimization  
-          （佐々木ほか）
-        </li>
-
-        <li>
-          <strong>2022</strong><br />
-          Majority-Voting Based Comparator for Low-Voltage ADCs  
-          （佐々木ほか）
-        </li>
-      </ul>
-
-      <h2 className="text-2xl font-semibold mt-16 mb-4">その他</h2>
-      <p className="text-lg leading-relaxed">
-        学会発表、研究報告、プロジェクト成果などについては、年度別に整理しています。
-        詳細は研究室にお問い合わせください。
-      </p>
-    </main>
+        <div className="mt-16">
+          <SectionHeading>{publications.otherHeading}</SectionHeading>
+          <p className="text-lg leading-relaxed text-gray-700">
+            {publications.otherBody}
+          </p>
+        </div>
+      </section>
+    </>
   );
 }

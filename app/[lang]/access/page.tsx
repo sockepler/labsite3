@@ -1,22 +1,42 @@
-export default function AccessPage() {
+import { notFound } from "next/navigation";
+import PageBanner from "../components/PageBanner";
+import SectionHeading from "../components/SectionHeading";
+import { getDictionary, isLang } from "../dictionaries";
+
+export default async function AccessPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  if (!isLang(lang)) notFound();
+  const { access } = await getDictionary(lang);
+
   return (
-    <main className="max-w-4xl mx-auto py-20 px-6 text-gray-800">
-      <h1 className="text-4xl font-bold mb-10">アクセス</h1>
+    <>
+      <PageBanner title={access.title} tint="rose" />
+      <section className="max-w-4xl mx-auto py-16 px-6 space-y-12 text-gray-800">
+        <div className="bg-white border border-gray-100 rounded-xl shadow-sm p-8">
+          <p className="text-lg leading-relaxed mb-4">{access.address1}</p>
+          <p className="text-lg leading-relaxed text-gray-700">
+            {access.address2}
+          </p>
+        </div>
 
-      <p className="text-lg leading-relaxed mb-6">
-        芝浦工業大学 先端集積回路システム研究室（豊洲キャンパス）
-      </p>
-
-      <p className="text-lg leading-relaxed mb-4">
-        〒135-8548  
-        東京都江東区豊洲 3-7-5
-      </p>
-
-      <h2 className="text-2xl font-semibold mt-12 mb-4">最寄駅</h2>
-      <ul className="list-disc pl-6 text-lg leading-relaxed">
-        <li>東京メトロ有楽町線「豊洲駅」徒歩 7 分</li>
-        <li>ゆりかもめ「豊洲駅」徒歩 6 分</li>
-      </ul>
-    </main>
+        <div>
+          <SectionHeading>{access.nearestHeading}</SectionHeading>
+          <ul className="grid md:grid-cols-2 gap-4">
+            {access.nearest.map((n) => (
+              <li
+                key={n}
+                className="bg-white border border-gray-100 rounded-xl shadow-sm p-5 text-gray-700 transition hover:shadow-md"
+              >
+                {n}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+    </>
   );
 }

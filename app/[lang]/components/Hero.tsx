@@ -1,46 +1,37 @@
-"use client";
+import Image from "next/image";
 
-import { useState, useEffect } from "react";
-
-export default function Hero({ title, subtitle }: { title: string; subtitle: string }) {
-  const [opacity, setOpacity] = useState(1);
-
-  useEffect(() => {
-    const handleScroll = () => {
-      const scrollY = window.scrollY;
-      const fade = Math.max(1 - scrollY / 300, 0);
-      setOpacity(fade);
-    };
-
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
-
+export default function Hero({
+  title,
+  subtitle,
+}: {
+  title: string;
+  subtitle: string;
+}) {
   return (
-    <section
-      className="relative h-screen flex items-center justify-center text-center px-6"
-      style={{ opacity, transition: "opacity 0.2s linear" }}
-    >
-      {/* Background image */}
-      <div
-        className="absolute inset-0 bg-cover bg-center"
-        style={{ backgroundImage: 'url("/hero.jpg")' }}
+    <section className="relative h-[80vh] min-h-[480px] flex items-center justify-center text-center px-6 overflow-hidden">
+      <Image
+        src="/hero.jpg"
+        alt=""
+        fill
+        priority
+        sizes="100vw"
+        className="object-cover"
       />
-
-      {/* Dark overlay */}
-      <div className="absolute inset-0 bg-black/40" />
-
-      {/* Gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-black/30 to-black/70" />
-
-      {/* Text content */}
-      <div className="relative z-10">
-        <h1 className="text-5xl md:text-6xl font-bold text-white drop-shadow-lg">
+      <div
+        className="absolute inset-0 bg-gradient-to-b from-black/50 via-black/40 to-black/75"
+        aria-hidden
+      />
+      <div className="relative z-10 max-w-5xl">
+        <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold text-white drop-shadow-lg leading-tight">
           {title}
         </h1>
-        <p className="text-xl md:text-2xl text-gray-200 mt-6 max-w-3xl mx-auto drop-shadow">
+        <p className="mt-6 text-lg md:text-xl lg:text-2xl text-gray-100 drop-shadow max-w-3xl mx-auto leading-relaxed whitespace-pre-line">
           {subtitle}
         </p>
+        <div
+          className="mt-12 inline-block w-px h-12 bg-white/40 animate-pulse"
+          aria-hidden
+        />
       </div>
     </section>
   );

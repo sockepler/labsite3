@@ -1,26 +1,64 @@
-export default function MembersPage() {
+import { notFound } from "next/navigation";
+import PageBanner from "../components/PageBanner";
+import SectionHeading from "../components/SectionHeading";
+import { getDictionary, isLang } from "../dictionaries";
+
+export default async function MembersPage({
+  params,
+}: {
+  params: Promise<{ lang: string }>;
+}) {
+  const { lang } = await params;
+  if (!isLang(lang)) notFound();
+  const { members } = await getDictionary(lang);
+
   return (
-    <main className="max-w-4xl mx-auto py-20 px-6 text-gray-800">
-      <h1 className="text-4xl font-bold mb-10">メンバー</h1>
+    <>
+      <PageBanner title={members.title} tint="emerald" />
+      <section className="max-w-5xl mx-auto py-16 px-6 space-y-14 text-gray-800">
+        <div id="faculty" className="scroll-mt-24">
+          <SectionHeading>{members.facultyHeading}</SectionHeading>
+          <div className="grid md:grid-cols-2 gap-6">
+            {members.faculty.map((p) => (
+              <article
+                key={p.name}
+                className="bg-white border border-gray-100 rounded-xl shadow-sm p-6 transition hover:shadow-md"
+              >
+                <h3 className="text-lg font-bold text-gray-900">{p.name}</h3>
+                <p className="text-gray-600 mt-2 leading-relaxed">{p.role}</p>
+              </article>
+            ))}
+          </div>
+        </div>
 
-      <h2 className="text-2xl font-semibold mb-4">教員</h2>
-      <ul className="list-disc pl-6 mb-10">
-        <li>
-          <strong>佐々木 昌浩（ささき まさひろ）准教授</strong><br />
-          先端集積回路、アナログ・ミックスドシグナル回路、データコンバータ
-        </li>
-      </ul>
+        <div id="grad" className="scroll-mt-24">
+          <SectionHeading>{members.gradHeading}</SectionHeading>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {members.grad.map((g) => (
+              <div
+                key={g}
+                className="bg-white border border-gray-100 rounded-lg p-4 text-gray-700 transition hover:shadow-md"
+              >
+                {g}
+              </div>
+            ))}
+          </div>
+        </div>
 
-      <h2 className="text-2xl font-semibold mb-4">大学院生</h2>
-      <ul className="list-disc pl-6 mb-10">
-        <li>張帆（修士課程1年）</li>
-        <li>その他数名</li>
-      </ul>
-
-      <h2 className="text-2xl font-semibold mb-4">学部生</h2>
-      <ul className="list-disc pl-6">
-        <li>B3 / B4 数名（年度により変動）</li>
-      </ul>
-    </main>
+        <div id="undergrad" className="scroll-mt-24">
+          <SectionHeading>{members.undergradHeading}</SectionHeading>
+          <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4">
+            {members.undergrad.map((u) => (
+              <div
+                key={u}
+                className="bg-white border border-gray-100 rounded-lg p-4 text-gray-700 transition hover:shadow-md"
+              >
+                {u}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
